@@ -35,7 +35,7 @@ jobs:
 
             
             - name: Setup Terraform
-              uses: hashicorp/setup-terraform@v1
+              uses: hashicorp/setup-terraform@v3
               with:
                 # cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
                 terraform_version: 0.15.0
@@ -49,7 +49,7 @@ jobs:
     
             - name: Post Format
               if: always() && github.ref != 'refs/heads/main' && (steps.fmt.outcome == 'success' || steps.fmt.outcome == 'failure')
-              uses: robburger/terraform-pr-commenter@v1
+              uses: robburger/terraform-pr-commenter@v1.5.0
               with:
                 commenter_type: fmt
                 commenter_input: ${{ format('{0}{1}', steps.fmt.outputs.stdout, steps.fmt.outputs.stderr) }}
@@ -64,7 +64,7 @@ jobs:
 
             - name: Post Init
               if: always() && github.ref != 'refs/heads/main' && (steps.init.outcome == 'success' || steps.init.outcome == 'failure')
-              uses: robburger/terraform-pr-commenter@v1
+              uses: robburger/terraform-pr-commenter@v1.5.0
               with:
                 commenter_type: init
                 commenter_input: ${{ format('{0}{1}', steps.init.outputs.stdout, steps.init.outputs.stderr) }}
@@ -78,7 +78,7 @@ jobs:
     
             - name: Post Validate
               if: always() && github.ref != 'refs/heads/main' && (steps.validate.outcome == 'success' || steps.validate.outcome == 'failure')
-              uses: robburger/terraform-pr-commenter@v1
+              uses: robburger/terraform-pr-commenter@v1.5.0
               with:
                 commenter_type: validate
                 commenter_input: ${{ format('{0}{1}', steps.validate.outputs.stdout, steps.validate.outputs.stderr) }}
@@ -88,26 +88,26 @@ jobs:
               id: plan
               run: |
                     cd ./terraform 
-                    # terraform plan -out workspace.plan
-                    terraform plan 
+                    terraform plan -out workspace.plan
+                    # terraform plan 
     
             - name: Post Plan
               if: always() && github.ref != 'refs/heads/main' && (steps.plan.outcome == 'success' || steps.plan.outcome == 'failure')
-              uses: robburger/terraform-pr-commenter@v1
+              uses: robburger/terraform-pr-commenter@v1.5.0
               with:
                 commenter_type: plan
                 commenter_input: ${{ format('{0}{1}', steps.plan.outputs.stdout, steps.plan.outputs.stderr) }}
                 commenter_exitcode: ${{ steps.plan.outputs.exitcode }}
 
 
-            - name: Terraform Destroy
-              id: destroy
-              run: |
-                   cd ./terraform
-                   terraform destroy -auto-approve
-    
-            # - name: Terraform Apply
-            #   id: apply
+            # - name: Terraform Destroy
+            #   id: destroy
             #   run: |
-            #         cd ./terraform
-            #         terraform apply workspace.plan
+            #        cd ./terraform
+            #        terraform destroy -auto-approve
+    
+            - name: Terraform Apply
+              id: apply
+              run: |
+                    cd ./terraform
+                    terraform apply workspace.plan
