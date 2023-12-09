@@ -1,0 +1,24 @@
+name: aws deployment
+
+on: push
+
+
+jobs:
+    deployAws:
+        runs-on: ubuntu-latest
+        steps:
+            - name: cloning repo
+              uses: actions/checkout@v3
+
+
+            - name: Configure AWS Credentials
+              uses: aws-actions/configure-aws-credentials@v4
+              with:
+                aws-region: us-east-1
+                role-to-assume: arn:aws:iam::746196583728:role/AWS_LINK
+                role-session-name: awsConf
+
+            - name: testing aws configure
+              run: aws s3 ls
+
+            
