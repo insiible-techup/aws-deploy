@@ -3,3 +3,4 @@ resource "aws_s3_bucket" "ga-bk" {
     bucket = "${each.value}-bk"
   
 }
+

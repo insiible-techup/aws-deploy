@@ -79,7 +79,8 @@ jobs:
               id: plan
               run: |
                     cd ./terraform 
-                    terraform plan -out workspace.plan
+                    # terraform plan -out workspace.plan
+                    terraform plan 
     
             - name: Post Plan
               if: always() && github.ref != 'refs/heads/master' && (steps.plan.outcome == 'success' || steps.plan.outcome == 'failure')
@@ -90,14 +91,14 @@ jobs:
                 commenter_exitcode: ${{ steps.plan.outputs.exitcode }}
 
 
-            # - name: Terraform Destroy
-            #   id: destroy
-            #   run: |
-            #        cd ./terraform
-            #        terraform destroy -auto-approve
-    
-            - name: Terraform Apply
-              id: apply
+            - name: Terraform Destroy
+              id: destroy
               run: |
-                    cd ./terraform
-                    terraform apply workspace.plan
+                   cd ./terraform
+                   terraform destroy -auto-approve
+    
+            # - name: Terraform Apply
+            #   id: apply
+            #   run: |
+            #         cd ./terraform
+            #         terraform apply workspace.plan
