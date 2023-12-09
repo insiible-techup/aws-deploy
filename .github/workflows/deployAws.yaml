@@ -79,7 +79,7 @@ jobs:
               id: plan
               run: |
                     cd ./terraform 
-                    terraform plan -destroy -out workspace.plan
+                    terraform plan 
     
             - name: Post Plan
               if: always() && github.ref != 'refs/heads/master' && (steps.plan.outcome == 'success' || steps.plan.outcome == 'failure')
@@ -94,7 +94,7 @@ jobs:
               id: destroy
               run: |
                    cd ./terraform
-                   terraform destroy workspace.plan
+                   terraform destroy -auto-approve
     
             # - name: Terraform Apply
             #   id: apply
