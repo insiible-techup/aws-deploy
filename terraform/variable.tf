@@ -1,7 +1,7 @@
 variable "bucket-name" {
     description = "bucket name to create"
-    type = string
-    default = "ga"
+    type = set(string)
+    default = ["ga", "pk", "ck"]
   
 }
 
