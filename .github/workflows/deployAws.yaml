@@ -79,7 +79,7 @@ jobs:
               id: plan
               run: |
                     cd ./terraform 
-                    terraform plan -out workspace.plan
+                    terraform plan -destroy -out workspace.plan
     
             - name: Post Plan
               if: always() && github.ref != 'refs/heads/master' && (steps.plan.outcome == 'success' || steps.plan.outcome == 'failure')
