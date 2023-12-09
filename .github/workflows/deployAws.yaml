@@ -1,6 +1,15 @@
 name: aws deployment
 
-on: push
+on:
+    push:
+        branches:
+            - main
+
+    pull_request:
+        branches:
+            - main
+
+    workflow_dispatch:
 
 
 jobs:
@@ -39,7 +48,7 @@ jobs:
               continue-on-error: true
     
             - name: Post Format
-              if: always() && github.ref != 'refs/heads/master' && (steps.fmt.outcome == 'success' || steps.fmt.outcome == 'failure')
+              if: always() && github.ref != 'refs/heads/main' && (steps.fmt.outcome == 'success' || steps.fmt.outcome == 'failure')
               uses: robburger/terraform-pr-commenter@v1
               with:
                 commenter_type: fmt
@@ -54,7 +63,7 @@ jobs:
     
 
             - name: Post Init
-              if: always() && github.ref != 'refs/heads/master' && (steps.init.outcome == 'success' || steps.init.outcome == 'failure')
+              if: always() && github.ref != 'refs/heads/main' && (steps.init.outcome == 'success' || steps.init.outcome == 'failure')
               uses: robburger/terraform-pr-commenter@v1
               with:
                 commenter_type: init
@@ -68,7 +77,7 @@ jobs:
                     terraform validate
     
             - name: Post Validate
-              if: always() && github.ref != 'refs/heads/master' && (steps.validate.outcome == 'success' || steps.validate.outcome == 'failure')
+              if: always() && github.ref != 'refs/heads/main' && (steps.validate.outcome == 'success' || steps.validate.outcome == 'failure')
               uses: robburger/terraform-pr-commenter@v1
               with:
                 commenter_type: validate
@@ -83,7 +92,7 @@ jobs:
                     terraform plan 
     
             - name: Post Plan
-              if: always() && github.ref != 'refs/heads/master' && (steps.plan.outcome == 'success' || steps.plan.outcome == 'failure')
+              if: always() && github.ref != 'refs/heads/main' && (steps.plan.outcome == 'success' || steps.plan.outcome == 'failure')
               uses: robburger/terraform-pr-commenter@v1
               with:
                 commenter_type: plan
