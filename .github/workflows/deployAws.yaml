@@ -46,14 +46,25 @@ jobs:
                     cd ./terraform
                     terraform fmt -check -recursive
               continue-on-error: true
-    
+
             - name: Post Format
               if: always() && github.ref != 'refs/heads/main' && (steps.fmt.outcome == 'success' || steps.fmt.outcome == 'failure')
-              uses: robburger/terraform-pr-commenter@v1.5.0
+              uses: actions/github-script@v6
               with:
-                commenter_type: fmt
-                commenter_input: ${{ format('{0}{1}', steps.fmt.outputs.stdout, steps.fmt.outputs.stderr) }}
-                commenter_exitcode: ${{ steps.fmt.outputs.exitcode }}
+                script: |
+                   github.rest.issues.createComment({
+                     owner: context.repo.owner,
+                     repo: context.repo.repo,
+                     issue_number: context.issue.number,
+                     body: steps.fmt.outputs.stdout
+                    })
+            # - name: Post Format
+            #   if: always() && github.ref != 'refs/heads/main' && (steps.fmt.outcome == 'success' || steps.fmt.outcome == 'failure')
+            #   uses: robburger/terraform-pr-commenter@v1.5.0
+            #   with:
+            #     commenter_type: fmt
+            #     commenter_input: ${{ format('{0}{1}', steps.fmt.outputs.stdout, steps.fmt.outputs.stderr) }}
+            #     commenter_exitcode: ${{ steps.fmt.outputs.exitcode }}
     
             - name: Terraform Init
               id: init
